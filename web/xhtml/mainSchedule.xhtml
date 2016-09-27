@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:prcc="http://java.sun.com/jsf/composite/prcomponents"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/templates/layout.xhtml">
+		<ui:define name="top">
+			#{bundle.Sch}
+		</ui:define>
+		<ui:define id="mainScheduleContent" name="content">
+			<f:event type="preRenderView" listener="#{scheduleBean.init}"/>
+			<h:form id="mainScheduleForm">
+				<prcc:dataTableSchUtilForm canNotInput="false"/>
+				<br/>
+                                <p:commandButton value="ADD" action="#{scheduleBean.addBtn}"/>
+				<p:commandButton value="VIEW" action="#{scheduleBean.viewBtn}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</html>
+

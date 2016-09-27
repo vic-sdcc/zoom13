@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:prcc="http://java.sun.com/jsf/composite/prcomponents" 
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/layout.xhtml">
+        <ui:define name="top">
+            #{bundle.Del}
+        </ui:define>
+        <ui:define id="deleteContent" name="content"> 
+            <h:form id="deleteForm">
+                <f:event type="preRenderView" listener="#{scheduleBean.init}"/>
+                <h4>Schedule List:</h4>
+                <br/>
+                <p:dataTable id="scheduleList"
+                             value="#{scheduleBean.appschedList}"
+                             var="sList"
+                             scrollHeight="200"
+                             scrollRows="100"
+                             scrollable="true"
+                             liveScroll="true">
+                    <p:column headerText="Title">
+                        <h:outputText value="#{sList.actTitle}"/>
+                    </p:column>
+                    <p:column headerText="Venue">
+                        <h:outputText value="#{sList.actVenue}"/>
+                    </p:column>
+                    <p:column headerText="Type">
+                        <h:outputText value="#{sList.typeId.typeName}"/>
+                    </p:column>
+                    <p:column headerText="Date">
+                        <h:outputText value="#{sList.scheduledDate}">
+                            <f:convertDateTime pattern="MMM dd yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Time">
+                        <h:outputText value="#{sList.scheduledTimeFrom}">
+                            <f:convertDateTime pattern="hh:mm a"/>
+                        </h:outputText>
+                        <h:outputText value=" - "/>
+                        <h:outputText value="#{sList.scheduleTimeTo}">
+                            <f:convertDateTime pattern="hh:mm a"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Status" sortBy="#{sList.skedStatus}">
+                        <h:outputText value="#{sList.skedStatus}"/>
+                    </p:column>
+
+                    <p:column headerText="Tags">
+                        <ui:repeat var="kTag" value="#{scheduleBean.keyList(sList.appSkedno)}" >
+                            <p:row>
+                                <p:outputLabel value="#{kTag.keyTag},"/>
+                            </p:row>
+                        </ui:repeat>
+                    </p:column>
+                </p:dataTable>
+                <br/>
+                <br/>
+                <prcc:vieweditdeleteSchUtilForm canNotInput="false" buttonNotRender="true"/>
+                <br/>
+                <p><span>
+                        <h:commandButton value="DELETE" action="#{scheduleBean.delete}"/>
+                        <h:commandButton value="CANCEL" action="#{scheduleBean.cancelBtn}"/>
+                    </span></p>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

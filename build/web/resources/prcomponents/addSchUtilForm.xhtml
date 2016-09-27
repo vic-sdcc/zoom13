@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <composite:interface>
+        <composite:attribute name="canNotInput"/>
+        <composite:attribute name="buttonRender"/>
+    </composite:interface>
+    <composite:implementation>
+        <h:panelGrid columns="2">
+            <h:outputText value="Title:"/> <p:inputText value="#{scheduleBean.appSched.actTitle}" readonly="#{cc.attrs.canNotInput}"/>
+            <h:outputText value="Venue:"/> <p:inputText value="#{scheduleBean.appSched.actVenue}" readonly="#{cc.attrs.canNotInput}"/>
+            <h:outputText value="Date:"/>
+            <p:calendar id="date"
+                        value="#{scheduleBean.appSched.scheduledDate}"
+                        required="true"
+                        readonly="#{cc.attrs.canNotInput}"
+                        navigator="true"
+                        mode="popup"
+                        pattern="MMM dd yyyy"
+                        yearRange="c-1:c+5"
+                        mindate="#{currentDate}">
+                <f:convertDateTime pattern="MMM dd yyyy"/>
+            </p:calendar>
+            <h:outputText value="Schedule:"/>
+            <h:panelGrid columns="3" id="timePanel">
+                <p:calendar id="from" 
+                            stepMinute="15"
+                            timeOnly="true" 
+                            pattern="hh:mm a" 
+                            value="#{scheduleBean.appSched.scheduledTimeFrom}" 
+                            readonly="#{cc.attrs.canNotInput}">
+                    <p:ajax event="dateSelect" process="timePanel" update="timePanel"/>
+                </p:calendar>
+                <h:outputText value="-"/>
+                <p:calendar id="to"
+                            stepMinute="15"
+                            timeOnly="true" 
+                            pattern="hh:mm a" 
+                            value="#{scheduleBean.appSched.scheduleTimeTo}" 
+                            readonly="#{cc.attrs.canNotInput}">
+                    <p:ajax event="dateSelect" update="timePanel" process="timePanel"/>
+                </p:calendar>
+            </h:panelGrid>
+            <h:outputText value="Subject Code:"/>
+            <h:selectOneMenu id="subjectcode" value="#{scheduleBean.pmeSub.subjectCode}" readonly="#{cc.attrs.canNotInput}">
+                <f:selectItems value="#{scheduleBean.subjCode}" 
+                               var="sCode" 
+                               itemLabel="#{sCode.subjectTitle}" 
+                               itemValue="#{sCode.subjectCode}"/>
+            </h:selectOneMenu>
+            <h:outputText value="Type:"/>
+            <h:selectOneMenu id="type" value="#{scheduleBean.selectedTypeId}" readonly="#{cc.attrs.canNotInput}">
+                <f:selectItems value="#{scheduleBean.pmeType}" 
+                               var="pType" 
+                               itemLabel="#{pType.typeName}" 
+                               itemValue="#{pType.typeId}"/>
+            </h:selectOneMenu>
+            <h:outputText value="Status:"/>
+            <h:selectOneMenu id="status" value="#{scheduleBean.appSched.skedStatus}" readonly="#{cc.attrs.canNotInput}">
+                <f:selectItem itemLabel="Confirmed" itemValue="Confirmed"/>
+                <f:selectItem itemLabel="Cancelled" itemValue="Cancelled"/>
+            </h:selectOneMenu>
+
+            <h:outputText value="Tag(s):"/> <h:outputText value="&nbsp;"/>
+            <h:outputText value="&nbsp;"/>
+            <p:panel id="ShowkTagBox" style="background-color: activecaption; width: 40%;">
+                <p:commandButton value="+" 
+                                 actionListener="#{scheduleBean.addTxtBoxkey}" 
+                                 style="margin-left:10px;"
+                                 update="ShowkTagBox"
+                                 rendered="#{scheduleBean.keyTag.size() lt 10 or !cc.attrs.buttonRender}"/>
+                <br/><br/>
+                <ui:repeat var="kTag" value="#{scheduleBean.keyTag}">
+                    <p:row rendered="#{scheduleBean.keyTag.size() gt 0}">
+                        <p>
+                            <h:selectOneMenu id="tags" value="#{kTag.keyId}">
+                                <f:selectItems value="#{scheduleBean.keyTagList}"
+                                               var="kTagL"
+                                               itemLabel="#{kTagL.keyTag}"
+                                               itemValue="#{kTagL.keyId}"/>
+                            </h:selectOneMenu>
+                        </p>
+                    </p:row>
+                </ui:repeat>
+
+                <p:commandButton value="-" 
+                                 actionListener="#{scheduleBean.removeTxtBoxkey}" 
+                                 update="ShowkTagBox"
+                                 rendered="#{scheduleBean.keyTag.size() gt 0 or !cc.attrs.buttonRender}" />
+            </p:panel>
+
+        </h:panelGrid>
+    </composite:implementation>
+</html>
